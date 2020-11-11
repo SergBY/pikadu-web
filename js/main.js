@@ -12,14 +12,16 @@ menuToggle.addEventListener('click', function (event) {
 
 
 const loginElem = document.querySelector('.login'),
-      loginForm = document.querySelector('.login-form'),
-      emailInput = document.querySelector('.login-email'),
-      passwordInput = document.querySelector('.login-password'),
-      loginSignup = document.querySelector('.login-signup');
+  loginForm = document.querySelector('.login-form'),
+  emailInput = document.querySelector('.login-email'),
+  passwordInput = document.querySelector('.login-password'),
+  loginSignup = document.querySelector('.login-signup'),
+  userElem = document.querySelector('.user'),
+  userNameElem = document.querySelector('.user-name');
 // console.log(loginElem);
 
-const listUsers = [
-  {
+
+const listUsers = [{
     id: '01',
     email: 'max@mail.ru',
     password: '12345',
@@ -35,37 +37,80 @@ const listUsers = [
 
 const setUsers = {
   user: null,
-  logIn(email, password) {
-    console.log('logIn');
+  logIn(email, password, handler) {
+    // console.log('logIn');
+    const user = this.getUser(email);
+    if (user && user.password === password) {
+      this.authorizedUser(user);
+      handler();
+    } else {
+      alert("Пользователь с такими данными не найден!");
+    }
   },
   logOut() {
-    console.log('logOut');
+    // console.log('logOut');
   },
-  signUp(email, password) {
-    console.log('signUp');
+  signUp(email, password, handler) {
+    // console.log('signUp');
     if (!this.getUser(email)) {
-      listUsers.push({email, password, displayName: email});
+      const user = {
+        email,
+        password,
+        displayName: email
+      };
+      listUsers.push(user);
+      this.authorizedUser(user);
+      handler();
     } else {
       alert("Пользователь с таким именем уже есть");
     }
+  },
+  getUser(email) {
+    // let user = null;
+    // for (let i = 0; i < listUsers.length; i++) {
+    //   (listUsers[i].email === email) {
+    //     user = listUsers[i];
+    //   }
+    // }
+    // return user;
+    return listUsers.find((item) => item.email === email
+    );
+  },
+  authorizedUser(user) {
+    this.user = user;
   }
 };
 // setUsers.logIn();
 // setUsers.logOut();
 // setUsers.signUp();
 
+const toggleAuthDom = () => {
+  const user = setUsers.user;
+  if(user) {
+    loginElem.style.display = 'none';
+    userElem.style.display = '';
+    userNameElem.textContent = user.displayName;
+  } else {
+    loginElem.style.display = '';
+    userElem.style.display = 'none';
+  }
+};
+
 loginForm.addEventListener('submit', (event) => {
   event.preventDefault();
   // const emailValue = emailInput.value,
   //       passwordValue = passwordInput.value;
   // setUsers.logIn(emailValue, passwordValue);
-  setUsers.logIn(emailInput.value, passwordInput.value);  //замена прошлых 3-х
+  setUsers.logIn(emailInput.value, passwordInput.value, toggleAuthDom); //замена прошлых 3-х
+  
 });
 loginSignup.addEventListener('click', (event) => {
   event.preventDefault();
-    // const emailValue = emailInput.value,
+  // const emailValue = emailInput.value,
   //       passwordValue = passwordInput.value;
   // setUsers.signUp(emailValue, passwordValue);
-  setUsers.signUp(emailInput.value, passwordInput.value); //замена прошлых 3-х
+  setUsers.signUp(emailInput.value, passwordInput.value, toggleAuthDom); //замена прошлых 3-х
+  
 });
 
+toggleAuthDom();
