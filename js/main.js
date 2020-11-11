@@ -52,6 +52,11 @@ const setUsers = {
   },
   signUp(email, password, handler) {
     // console.log('signUp');
+    if (!email.trim() || !password.trim()) {
+      alert('Введите данные');
+      return;
+    }
+
     if (!this.getUser(email)) {
       const user = {
         email,
@@ -102,7 +107,7 @@ loginForm.addEventListener('submit', (event) => {
   //       passwordValue = passwordInput.value;
   // setUsers.logIn(emailValue, passwordValue);
   setUsers.logIn(emailInput.value, passwordInput.value, toggleAuthDom); //замена прошлых 3-х
-  
+  loginForm.reset();
 });
 loginSignup.addEventListener('click', (event) => {
   event.preventDefault();
@@ -110,7 +115,7 @@ loginSignup.addEventListener('click', (event) => {
   //       passwordValue = passwordInput.value;
   // setUsers.signUp(emailValue, passwordValue);
   setUsers.signUp(emailInput.value, passwordInput.value, toggleAuthDom); //замена прошлых 3-х
-  
+  loginForm.reset();
 });
 
 toggleAuthDom();
